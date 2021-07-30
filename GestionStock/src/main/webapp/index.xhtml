@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	lang="fr">
+<h:head>
+	<title>Gestion de Stock Articles</title>
+
+
+
+</h:head>
+<h:body>
+
+    <b:navBar brand="RayBan" brandHref="#" inverse="true">
+		<b:navbarLinks>
+			<b:navLink value="Home" href="index.xhtml">
+
+			</b:navLink>
+			<b:navLink value="Commandes" href="commande.xhtml"></b:navLink>
+			<b:navLink value="Déconnecter" href="login.xhtml"></b:navLink>
+		</b:navbarLinks>
+	</b:navBar>
+
+
+	<h:form style="margin-left:100px;margin-bottom:70px" title="Ajouter un Article">
+	<b:label style="background-color:white;color:blue;font-size:20px;margin:50px" value="Ajouter un nouveau Article" />
+		<b:commandButton  style="width:80px" look="primary" value="Ajouter " 
+			actionListener="#{articleManagedBean.limpiarArticle()}"
+			oncomplete="PF('dialogoAgregar').show();" update=":formAgregar" />
+
+	</h:form>
+
+
+
+
+ <b:container>
+ 
+ <h:form id="formListado" lang="fr">
+  <b:dataTable id="tablaArticles" lang="fr" value="#{articleManagedBean.listaArticles}"
+           var="article"
+           custom-options="dom: 'lfrtiBp',buttons: [
+ {
+     extend: 'copyHtml5',
+     exportOptions: {
+         columns: [ 0,1,2,3,4, 'visible' ],
+         
+     }
+ },
+ {
+     extend: 'excelHtml5',
+     exportOptions: {
+         columns: [ 0,1,2,3,4, 'visible' ]
+     }
+ },
+ {
+     extend: 'print',
+     exportOptions: {
+         columns: [ 0,1,2,3,4, 'visible' ]
+        
+     }
+ },
+ 'colvis']"
+          
+            >
+    <b:dataTableColumn  label="Code d'article"  value="#{article.codeArt}" />
+    <b:dataTableColumn label="Nom d'article" value="#{article.nomArt}" />
+    <b:dataTableColumn label="Description" value="#{article.descArt}" />
+    <b:dataTableColumn label="Prix" value="#{article.prixArt} DH"  order="asc"/>
+    <b:dataTableColumn label="Quantité" value="#{article.qteArt}" />
+    <b:dataTableColumn style="text-align: center" value="#{car.enginePower}" label="Modifier | Supprimer" >
+       				<p:commandButton icon="ui-icon-pencil" style="background-color:yellow" title="Modifier"
+					oncomplete="PF('dialogoModificar').show();" update=":formModificar">
+					<f:setPropertyActionListener target="#{articleManagedBean.article}"
+						value="#{article}" />
+				   </p:commandButton>
+				   |
+				   <p:commandButton style="background-color:red" icon="ui-icon-trash" title="Supprimer"
+					oncomplete="PF('dialogoEliminar').show();" update=":formEliminar">
+					<f:setPropertyActionListener target="#{articleManagedBean.article}"
+						value="#{article}" />
+				</p:commandButton>
+    </b:dataTableColumn>
+  </b:dataTable>
+</h:form>
+ 
+ </b:container>
+
+
+
+
+	<h:form id="formAgregar">
+		<p:dialog id="dlgAgregar" header="Ajouter un Article"
+			widgetVar="dialogoAgregar" resizable="false" showEffect="fade"
+			hideEffect="explode" modal="true">
+			<p:panelGrid columns="2" style="margin: 0 auto;">
+				<p:outputLabel value="Le nom Article:" />
+				<p:inputText value="#{articleManagedBean.article.nomArt}" />
+				<p:outputLabel value="Descrition d'Article:" />
+				<p:inputText value="#{articleManagedBean.article.descArt}" />
+				<p:outputLabel value="prix d'Article:" />
+				<p:inputText value="#{articleManagedBean.article.prixArt}" />
+				<p:outputLabel value="Quantité:" />
+				<p:inputText value="#{articleManagedBean.article.qteArt}" />
+				
+			</p:panelGrid>
+			<p:commandButton value="Sauvegarder"
+				actionListener="#{articleManagedBean.agregarArticle()}"
+				update=":formListado:tablaArticles"
+				oncomplete="PF('dialogoAgregar').hide();" />
+			<p:commandButton value="Annuler"
+				onclick="PF('dialogoAgregar').hide();" />
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="formModificar">
+		<p:dialog id="dlgModificar" header="Modifier Article"
+			widgetVar="dialogoModificar" resizable="false" showEffect="fade"
+			hideEffect="explode" modal="true">
+			<p:panelGrid columns="2" style="margin: 0 auto;">
+				<p:outputLabel value="Le nom Article:" />
+				<p:inputText  value="#{articleManagedBean.article.nomArt}" />
+				<p:outputLabel value="Descrition d'Article:" />
+				<p:inputText value="#{articleManagedBean.article.descArt}" />
+				<p:outputLabel value="prix d'Article:" />
+				<p:inputText value="#{articleManagedBean.article.prixArt}" />
+				<p:outputLabel value="Quantité:" />
+				<p:inputText value="#{articleManagedBean.article.qteArt}" />
+			</p:panelGrid>
+			<p:commandButton value="Sauvegarder"
+				actionListener="#{articleManagedBean.modificarArticle()}"
+				update=":formListado:tablaArticles"
+				oncomplete="PF('dialogoModificar').hide();" />
+			<p:commandButton value="Annuler"
+				onclick="PF('dialogoModificar').hide();" />
+		</p:dialog>
+	</h:form>
+
+	<h:form id="formEliminar">
+		<p:dialog id="dlgEliminar" header="Supprimer Article"
+			widgetVar="dialogoEliminar" resizable="false" showEffect="fade"
+			hideEffect="explode" modal="true">
+			<h:outputText value="Voulez-vous supprimer cet enregistrement ? " />
+			<p:commandButton value="OUI"
+				actionListener="#{articleManagedBean.eliminarArticle()}"
+				update=":formListado:tablaArticles"
+				oncomplete="PF('dialogoEliminar').hide();" />
+			<p:commandButton value="NON" onclick="PF('dialogoEliminar').hide();" />
+		</p:dialog>
+	</h:form>
+
+
+
+
+
+
+
+
+
+
+
+</h:body>
+</html>
+
